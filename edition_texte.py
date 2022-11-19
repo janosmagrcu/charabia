@@ -68,6 +68,8 @@ def stat(url,comp=None,normale=False,expo=False):
 
 
     if comp == 'text':
+        # les chiffres viennent du site : http://linguistiques.muroni.free.fr/linguistiques/longueurdesmots.html
+        # pas hésiter à aller voir le site Hyperbase pour des grosses bases de données textuelles plurilingues
         lenlist_text = [31953,95181,58882,55924,41093,34890,28556,19778,12263,6703,3088,1559,699,282,108,51,4,7,1,1,1,3,3,1,1,0,0,0,0,0]+[0]*(Max-30)
         l_text = sum(lenlist_text)
         B = [n/l_text for n in lenlist_text]
