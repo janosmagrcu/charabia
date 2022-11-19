@@ -33,13 +33,16 @@ with open('mots_francais.txt','r',-1,'utf-8') as mots:
     except: RuntimeWarning
     p[np.isnan(p)]=0
     
-    text = 'e .'
-    for _ in range(200): text = np.random.choice(letters,p=p[letters.index(text[1]),letters.index(text[0])]) + text
+    text = 'e '
+    for _ in range(100000): text = np.random.choice(letters,p=p[letters.index(text[1]),letters.index(text[0])]) + text
     l = ''
     while l != ' ':
         l = np.random.choice(letters,p=p[letters.index(text[1]),letters.index(text[0])])
         text = l + text
-    imaj = letters.index(text[1])
-    text = letters[imaj].upper() + text[2:]
-    print(text)
+    #imaj = letters.index(text[1])
+    #text = letters[imaj].upper() + text[2:]
+    text = text.replace(' ','\n')
+
+with open('mots_jonas.txt','w',-1,'utf8') as lines:
+    lines.write(text)
     
