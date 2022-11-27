@@ -1,3 +1,6 @@
+# Version pourrie où j'utilise pas encore une base de donnée
+# Et c 'est juste la création d'une matrice 2D, pas l'utilisation
+
 characteres = "abcdefghijklmnopqrstuvwxyz "
 
 mots = "manger caca bonjour il comment truc vivant australopitheque fluctuer colon criniere qualifier brouter frousse echelle domino rabin nostalgie charabia"
