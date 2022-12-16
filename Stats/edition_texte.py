@@ -1,9 +1,12 @@
 # pour transformer un document texte quelconque en document normalisé exploitable (enregistré sous nom__.txt)
 def clean(url):
+    import re
+
     with open(url,'r') as mots_in:
         with open(url[:-4]+'__.txt','x') as mots_out:
             text = ''
             for m in mots_in: text += m
+            text = re.sub('[\W\d_]+',' ', text.replace('- ', ''))   #'[^a-zA-Z]+'
             text = text.lower().strip().replace('  ',' ').replace(' ','\n').replace('\n\n','\n').replace('.','')
             mots_out.write(text)
 
@@ -48,18 +51,6 @@ def stat(url,comp=None,normale=False,expo=False):
     #print(f'mu = {mu}, sigma = {sigma}')
     A = [n/l for n in lenlist]
 
-    if normale == True:
-        N = lambda x : math.exp(-0.5*((x-mu)/sigma)**2)/(sigma*math.sqrt(2*math.pi))
-        Y = [N(i) for i in X]
-        plt.plot(X,Y,label=f'Normale mu={round(mu,1)} sigma={round(sigma,2)}')
-
-    if expo == True:
-        alpha = 1/sigma
-        E = lambda x : alpha*math.exp(-x*alpha)
-        Z = [E(i) for i in X]
-        plt.plot(X,Z,label=f'Exponentielle lambda={1/sigma}')
-
-
     if comp == 'dico':
         lenlist_dico = lengths(wlist('mots_francais.txt'))
         l_dico = sum(lenlist_dico)
@@ -75,10 +66,29 @@ def stat(url,comp=None,normale=False,expo=False):
         B = [n/l_text for n in lenlist_text]
         plt.plot(X,B,label='Texte')
 
+    elif comp != None:
+        lenlist_comp = lengths(wlist(comp))[:30]
+        l_comp = sum(lenlist_comp)
+        C = [n/l_comp for n in lenlist_comp]
+        plt.plot(X,C,label=comp)
+
+
+    if normale == True:
+        N = lambda x : math.exp(-0.5*((x-mu)/sigma)**2)/(sigma*math.sqrt(2*math.pi))
+        Y = [N(i) for i in X]
+        plt.plot(X,Y,label=f'Normale mu={round(mu,1)} sigma={round(sigma,2)}')
+
+    if expo == True:
+        alpha = 1/sigma
+        E = lambda x : alpha*math.exp(-x*alpha)
+        Z = [E(i) for i in X]
+        plt.plot(X,Z,label=f'Exponentielle lambda={1/sigma}')
+
+
     plt.plot(X,A,label=url)
     plt.xlabel('taille du mot')
     plt.ylabel('Probabilité')
-    plt.title(f'Taille des mot dans <{url}>')
+    plt.title(f'Taille des mots dans <{url}>')
     plt.legend()
     plt.show()
 
