@@ -26,6 +26,7 @@ def mdico(url):
 def id(lettre):
     return ord(lettre) - 97
 
+# fonction qui donne la lettre associée à un numéro
 def di(indice):
     return chr(indice + 97)
 
@@ -33,7 +34,7 @@ def proba(url):
     global lmot
     nb_lettre = 26
     #nb_mot = int(len(lmot))
-    lg_max = max(mdico(url).keys())
+    lg_max = max(mdico(url).keys()) # max(lmot,len)
     #consonnes = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v',  'w', 'x', 'z']
     #voyelles = ['a', 'e', 'i', 'o', 'u', 'y']
 
@@ -189,4 +190,7 @@ def create_verbs(n):
         charabia.writelines('\n')
     charabia.close()
 
+
+
+create_words("D:/__CPES/___L2/Informatique/Projet/charabia/mots_francais.txt", 100)
 
