@@ -15,7 +15,7 @@ def générer(n_phrases):
 	
 	proba_tables = [None]*profondeur_max
 	for prof in range(profondeur_max):
-		with open(local_path + f'/Data/Tables de transitions/Syntaxe_proba_profondeur_{prof+1}.pkl', "rb") as file:
+		with open(local_path + f'/Transitions Tables/Syntaxe_proba_profondeur_{prof+1}.pkl', "rb") as file:
 			proba_tables[prof] = pickle.load(file)	
 
 
@@ -105,32 +105,73 @@ def générer(n_phrases):
 			mots += [(" "," ")]
 
 
+	# # ici on règle les problèmes de l'/le, d'/de, t'/te, s'/se, qu'/que, m'/me, n'/ne
+	# problèmes = {"l","le","la","d","de","t","te","s","se","qu","que","m","me","n","ne",
+	# "jusqu","jusque","lorsqu","lorsque","quoiqu","quoique", "parce qu", "parce que",
+	# "tandis que","tandis qu", "puisque","puisqu", 'afin de', "afin d"}
+	# voyelles = set("aeiouâàéèêëïîôùû")
+
+	# mots = mots[1:]
+	# for i,(mot,gram) in enumerate(mots):
+	# 	if mot.lower() in problèmes:
+	# 		if mot[-1] != 'e': mot += "e"
+	# 		mot_suivant = mots[i+2]
+	# 		if mot_suivant[0][0] in voyelles:
+	# 			mot = mot[:-1] + "'"
+	# 			mots[i+1] = ('','')
+	# 		else:
+	# 			if mot == "le" and '_f' in gram or mot_suivant[0] == "Yvonne": mot = "la"
+	# 		mots[i] = (mot,gram)
+
+	# # à faire : sur le même modèle : ce/cet
 	# ici on règle les problèmes de l'/le, d'/de, t'/te, s'/se, qu'/que, m'/me, n'/ne
-	problèmes = {"l","le","la","d","de","t","te","s","se","qu","que","m","me","n","ne",
+	problèmes = {"je","j","l","le","la","d","de","t","te","s","se","qu","que","m","me","n","ne",
 	"jusqu","jusque","lorsqu","lorsque","quoiqu","quoique", "parce qu", "parce que",
 	"tandis que","tandis qu", "puisque","puisqu", 'afin de', "afin d"}
 	voyelles = set("aeiouâàéèêëïîôùû")
 
 	mots = mots[1:]
 	for i,(mot,gram) in enumerate(mots):
+
 		if mot.lower() in problèmes:
-			if mot[-1] != 'e': mot += "e"
+			# print("problème")
+			# print(mot,end=' ')
+			if mot[-1] != 'e': 
+				if mot in {'la',"La"}: mot = mot[:-1]
+				mot += "e"
 			mot_suivant = mots[i+2]
+			# print(f'... {mot} ...',end=' ')
 			if mot_suivant[0][0] in voyelles:
 				mot = mot[:-1] + "'"
 				mots[i+1] = ('','')
 			else:
-				if mot == "le" and '_f' in gram or mot_suivant[0] == "Yvonne": mot = "la"
+				if mot.lower() == "le" and '_f' in mot_suivant[1] or mot_suivant[0] == "Yvonne": 
+					# print("-A-",end='')
+					mot = mot[:-1]+'a'
 			mots[i] = (mot,gram)
+			# print(f" + {mots[i+2]}"," --> ", f"{mot}{mots[i+1][0]}{mot_suivant[0]}")
 
-	# à faire : sur le même modèle : ce/cet
-	# Problèmes à régler :
-	# - le mot lae apparait parfois mais n'est pas dans lexicon (quel est ce bordel !?) => je pense que c'est dû aux magouilles ci-dessus lignes 114 à 124
-	# - encore deux ponctuations à la suite parfois (deux point ou points de susp avant point)
-	# - qu camping-gaz, qu se déprime, qu sitôt => pb de que/qu pas entièrement réglés !?
-	# La'amoncelait, La'ébahissait
-	# faire que ça termine par un stop : c'est pas toujours le cas
-
+		# sur le même modèle : ce/cet/cette/ces
+		if mot.lower() in {"ce","cet"}:
+			# print("ce/cet/cette/ces")
+			mot_suivant = mots[i+2]
+			# print(mot, mot_suivant, end=' ')
+			char = mot_suivant[0][0]
+			nombre_suivant = "_p" in mot_suivant[1]
+			genre_suivant = "_f" in mot_suivant[1]
+			if nombre_suivant:
+				suff = "s"
+			elif genre_suivant:
+				suff = "tte"
+			elif char in voyelles: 
+				suff = "t"
+			else:
+				suff =''
+			mot = mot[:2]+suff
+			mots[i] = (mot,gram)
+			# print(mot)
+			
+	print()
 	print(''.join(m for m,g in mots))
 
 """
@@ -149,6 +190,5 @@ Flamand.
 - Adressage Yvonne, pécore au saloir stroboscopique, le Jean-Philippe versus Jean-Philippe, au sloughi ils gémissaient pieusement puis gloussaient dans cette joie carotteuse péniblement réclamait procès-verbal.                 
 """
 
-
 profondeur_max = 8
-générer(20)
+générer(15)

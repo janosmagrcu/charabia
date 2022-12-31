@@ -1,13 +1,12 @@
-import os, pickle
+import os
+import pickle
 from openpyxl import load_workbook
+from num2words import num2words
 
 """
 Création d'un fichier pickle contenant un dictionnaire réduit à partir du Lexicon
 col 1 - orthographe
 col 2 - gram_genre_nombre_infover
-
-Puis créaction d'un autre fichier pickle contenant un lexicon inversé :
-à chaque fonction grammaticale (gram_genre_nombre_infover) est associée l'ensemble des mots ayant cette fonction
 
 Prend une vingtaine de secondes
 """
@@ -18,7 +17,7 @@ sheet = wb.active
 
 lexicon = {}
 
-for i,row in enumerate(sheet.iter_rows(min_row=2)): # min_row=2 : pour ne pas prendre la ligne de titre (openpyxl commence à 1 et non 0)
+for i,row in enumerate(sheet.iter_rows(min_row=2)):
 	ortho, gram, genre, nombre, infover = row
 	ort,gra,gen,nbr,ivs = ortho.value,gram.value,genre.value,nombre.value,infover.value
 	
@@ -32,15 +31,19 @@ for i,row in enumerate(sheet.iter_rows(min_row=2)): # min_row=2 : pour ne pas pr
 
 		lexicon[ort] = lexicon.get(ort,[]) + [g]
 
+# ajout des NUM et ORD de 0 à 1000:
 
-# lexicon inverse
+for n in range(1001):
+	lexicon[num2words(n, lang='fr')] = ['NUM']
+	lexicon[num2words(n, lang='fr', to='ordinal')] = ['ORD']
+
+# lexicon inverse :
 
 lexicon_inv = {}
 
 for mot,gram in lexicon.items():
 	for g in gram:
 		lexicon_inv[g] = lexicon_inv.get(g,set()) | {mot}
-
 
 # pickle dump
 with open(local_path + '/Data/Lexicon_simplifié.pkl', 'wb') as f:

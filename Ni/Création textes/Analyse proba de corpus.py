@@ -1,18 +1,11 @@
 import os, codecs, unicodedata, re, pickle
 from collections import deque
 
-"""
-Crée un dossieer Tables de transitions dans Data et créé les tables statistiques de profondeur 1 à prof_max sous forme de fichiers pickle dans ce dossier
-Prend environ 7 minutes
 
-"""
 # collection de Goncourts :
 corpus = os.path.dirname(__file__)+"/Data/Collection Prix Goncourt/txt"
 
 def multi_remplace(texte, remplacements):
-    """
-    remplace les clés du dictionnaire remplacements par leurs valeurs dans texte
-    """
 
     regex = re.compile('|'.join(map(re.escape, remplacements)))
     return regex.sub(lambda match: remplacements[match.group(0)], texte)
@@ -20,7 +13,7 @@ def multi_remplace(texte, remplacements):
 
 def charge(fichier_texte):
     """
-    Ouvre un livre en .txt, convertit son contenu en unicode utilisable et le nettoie
+    Ouvre un livre en .txt, convertit son contenu en unicode utilisable et le nettoie.
     """
 
     with codecs.open(os.path.join(corpus,fichier_texte), "r", "utf-8") as file:
@@ -33,11 +26,11 @@ def charge(fichier_texte):
     return texte
 
 
-def gram(mot, lexicon, ponctuation, stops, noms_propres, passe, precedents, proba_p1):
+def gram(mot, lexicon, ponctuation, stops, noms_propres, passe, precedents, proba_p1, mots_vais):
 
     """
-    reçoit un mot et renvoit sa ou ses fonctions grammaticales
-    renvoit 0 quand le mot n'est pas identifiable dans lexicon
+    reçoit un mot et renvoit son ou ses fonctions grammaticales
+    renvoit 0 quand le mot n'est pas identifiable
     """
 
     if mot in ponctuation : return mot
@@ -45,19 +38,25 @@ def gram(mot, lexicon, ponctuation, stops, noms_propres, passe, precedents, prob
     gm_gr_nb_iv = lexicon.get(mot.lower(),[])
     n_gr = len(gm_gr_nb_iv)
 
-    if n_gr != 1:
+    if n_gr != 1: 
 
-        if n_gr == 0 : # le mot n'est pas présent dans lexicon
+        # le mot n'est pas présent dans lexicon
+        if n_gr == 0 : 
             if mot in noms_propres or (mot.lower() != mot and (precedents or [None])[-1] not in stops):
                 # le mot est déjà répertorié comme nom propre, ou contient une majuscule et n'est pas précédé d'un stop.
                 noms_propres |= {mot}
                 return 'NPR'
-            if any(c.isdigit() for c in mot):
-                return 'NUM'
+            digits = [c.isdigit()  for c in mot]
+            if any(digits): 
+                if all(digits): return 'NUM'
+                else:
+                    if 'e' in mot[-3:]: return 'ORD'
+                    if mot[-1] == '°': return 'DEG'
             return 0
 
         # n_gr > 1, le mot peut avoir plusieurs fonctions grammaticales
-        if passe: # on est dans la 2eme passe => on tient compte des probas déjà calculées en 1ere passe
+        if passe:
+            # ici, on tient compte des probas déjà calculées en 1ere passe
 
             deja_vu = proba_p1.get(tuple(precedents),{})
 
@@ -75,13 +74,15 @@ def gram(mot, lexicon, ponctuation, stops, noms_propres, passe, precedents, prob
 
 def probalimente(proba_table,precedents,g):
     """
-    remplit la table de probas du décompte des occurences
+    fonction qui remplit la table de probas du décompte des occurences
     """
     if precedents not in proba_table: proba_table[precedents] = {g : 1}
-    else : proba_table[precedents][g] = proba_table[precedents].get(g, 0) +1
+    else : proba_table[precedents][g] = proba_table[precedents].get(g, 0) +1 # fait en une ligne les deux suivantes
+        # if g not in proba_table[precedents]: proba_table[precedents][g] = 1
+        # else : proba_table[precedents][g] += 1
 
 
-def analyse(corpus, lexicon, prof, local_path):
+def analyse(corpus, lexicon, prof):
     
     ponctuation = {')', ':', '=','+','!','?',';','-','…','(','}',"'",',','{',']','"','.','['}
     stops = {':','!','?','-','…','(',"'",'"','.','['} # peuvent précéder les majuscules
@@ -114,13 +115,13 @@ def analyse(corpus, lexicon, prof, local_path):
                 texte = texte.split()
 
                 ct = 1
-                fifo = deque(["."])
+                fifo = deque(["."]) # Optimisation possible : affecter des entiers aux fonctions grammaticales 
 
                 for mot in texte:
 
                     ct_mots += 1
 
-                    g = gram(mot, lexicon, ponctuation, stops, noms_propres, passe, fifo, proba_p1)
+                    g = gram(mot, lexicon, ponctuation, stops, noms_propres, passe, fifo, proba_p1, mots_vais)
 
                     if g == 0: # le mot n'a pas été trouvé dans lexicon
                     # le mot est indéfini, on n'enregistre pas la suite de fonctions grammaticales, on saute au i suivant
@@ -147,42 +148,34 @@ def analyse(corpus, lexicon, prof, local_path):
         print()
         print(ct_proba/ct_mots)
 
-    """
-    # produit un fichier des mots rejettés par gram pour voir les failles
+    
+    # produire un fichier des mots rejettés par gram pour voir les failles
     with open(local_path + '/Data/mots_vais.txt', 'w') as f:
         f.write('\n'.join(sorted(mots_vais)))
-    """
-    # pickle dump des noms propres
-    with open(local_path + '\\Data\\Noms_propres.pkl', 'wb') as f:
-            pickle.dump(noms_propres, f)
-
+    
     return proba_p2
 
 
 def multi_analyse(prof_max):
 
-    local_path = os.path.dirname(__file__)
-    with open(local_path + '/Data/Lexicon_simplifié.pkl', "rb") as file:
-        lexicon = pickle.load(file)
-
-    # Création dossier Tables de transitions dans Data
-    path_nouv_dossier = local_path + '/Data/Tables de transitions'
-    if not os.path.exists(path_nouv_dossier):
-        os.makedirs(path_nouv_dossier)
-
     for prof in range(1,prof_max+1):
 
         print(prof)
-        proba_table = analyse(corpus, lexicon, prof, local_path)
+        proba_table = analyse(corpus, lexicon, prof)
         print(list(proba_table.keys())[:10])
         print(len(proba_table.keys()))
 
-        # pickle dump dans Tables de transitions
+        # pickle dump
         name = f"Syntaxe_proba_profondeur_{prof}.pkl"
-        with open(local_path + f'\\Data\\Tables de transitions\\{name}', 'wb') as f:
+        with open(local_path + f'/Transitions Tables/{name}', 'wb') as f:
             pickle.dump(proba_table, f)
 
 
-prof_max = 8
+local_path = os.path.dirname(__file__)
+with open(local_path + '/Data/Lexicon_simplifié.pkl', "rb") as file:
+    lexicon = pickle.load(file)
+
+prof_max = 9
 multi_analyse(prof_max)
-# analyse(corpus, 5)
+
+# analyse(corpus, lexicon, 5)
