@@ -183,7 +183,6 @@ Aaah
 Aaahhhhh
 Aar
 Aassi
-Abaissant
 Abaissez
 Abandonne
 Abandonner
@@ -4910,7 +4909,6 @@ Ionescu
 Iou
 Iowa
 Ipiutak
-Ira
 Irakien
 Irakiens
 Iranien
@@ -5219,7 +5217,6 @@ LENTE
 LEONA
 LEONARDO
 LES
-LEUR
 LEVER
 LEVIS
 LIT
@@ -5324,8 +5321,6 @@ Lesquelles
 Lesquels
 Lestée
 Lettons
-Leur
-Leurs
 Levant
 Levantin
 Levantins
@@ -5464,7 +5459,6 @@ Lépinglad
 Lévitique
 Lézarde
 M
-MA
 MADY
 MAHDI
 MAIS
@@ -5493,11 +5487,9 @@ MEN
 MERCI
 MERIEM
 MERVEILLEUX
-MES
 MEUBLÉ
 MEUBLÉES
 MIDI
-MIENS
 MILIEU
 MILITAIRE
 MILLEPERTUIS
@@ -5514,7 +5506,6 @@ MOBIL
 MODÈLE
 MODÈLES
 MOI
-MON
 MONIQUE
 MONNAIE
 MONTRE
@@ -5539,7 +5530,6 @@ MUSICIENS
 MUSIQUE
 MUSULMANE
 MUSULMANS
-Ma
 Maboule
 Maclou
 Macédonien
@@ -5765,7 +5755,6 @@ Merssoul
 Merveilleuse
 Merveilleuses
 Merveilleux
-Mes
 Meskin
 Mesler
 Mesure
@@ -5788,7 +5777,6 @@ Miaule
 Micanovisqui
 Mich
 Midi
-Mien
 Mieux
 Mignon
 Mignonne
@@ -5866,7 +5854,6 @@ Moitié
 Moié
 Mollet
 Momifiée
-Mon
 Mondain
 Mondaine
 Mondiale
@@ -6076,7 +6063,6 @@ NON
 NORD
 NOSOTROS
 NOTE
-NOTRE
 NOUVELLE
 NU
 NUIT
@@ -6208,7 +6194,6 @@ Note
 Notez
 Nothing
 Notons
-Notre
 Notée
 Nouakchott
 Nouez
@@ -6267,7 +6252,6 @@ Négresse
 Népalais
 Nés
 Nê
-Nôtre
 Nœud
 O
 OBÈSE
@@ -8016,7 +8000,6 @@ Rêve
 Rêves
 Rêveur
 S
-SA
 SABLE
 SAINT
 SAINTE
@@ -8041,10 +8024,8 @@ SECRÈTE
 SECRÈTES
 SENS
 SERNIN
-SES
 SEUL
 SI
-SIENNE
 SIGNÉ
 SIJAC
 SIMON
@@ -8092,7 +8073,6 @@ SURNOMMÉE
 SURVIVANT
 SURVIVE
 SYMPATHISANTE
-Sa
 Saa
 Saale
 Sabi
@@ -8285,7 +8265,6 @@ Sers
 Servez
 Servi
 Servie
-Ses
 Sestra
 Seul
 Seule
@@ -8325,8 +8304,6 @@ Sidérée
 Siebert
 Sieds
 Sieg
-Sien
-Sienne
 Siffilé
 Sifflante
 Siffle
@@ -8829,9 +8806,6 @@ Thégonnec
 Théotine
 Tia
 Tibétains
-Tien
-Tienne
-Tiens
 Tiers
 Tillé
 Timbre
@@ -9209,7 +9183,6 @@ VOISIN
 VOISINS
 VOLANTE
 VOLEURS
-VOTRE
 VOULEZ
 VOX
 VOYAGE
@@ -9418,7 +9391,6 @@ Vostré
 Vot
 Votez
 Votons
-Votre
 Voudrais
 Voue
 Voui
@@ -9471,7 +9443,6 @@ Vétérinaire
 Vêtu
 Vêtue
 Vêtus
-Vôtre
 Völkerschauplatz
 WALKYRIES
 WE
@@ -9608,7 +9579,6 @@ aba
 ababa
 ababas
 abacost
-abaissant
 abaisse
 abaissé
 abaissée
@@ -9653,6 +9623,7 @@ abaza
 abbasside
 abbatiale
 abbomen
+abc
 abdique
 abdomens
 abdominaux
@@ -17295,6 +17266,7 @@ coltineurs
 colussi
 colèrent
 coléreuses
+com
 comaco
 comatait
 comateuse
@@ -26243,6 +26215,7 @@ formées
 formés
 fornique
 forniquera
+fors
 forsyth
 fort
 forte
@@ -30536,7 +30509,6 @@ ipso
 ipécacuanha
 ique
 ir
-ira
 irae
 irais
 irakien
@@ -31040,6 +31012,7 @@ juxtapose
 juxtaposée
 juxtaposées
 juxtaposés
+jà
 jé
 jên
 jôdi
@@ -31444,6 +31417,7 @@ lamas
 lamaserie
 lamaseries
 lamba
+lambi
 lambina
 lambine
 lambinez
@@ -31698,11 +31672,9 @@ lettrés
 leucogaster
 leucémique
 leuger
-leur
 leurre
 leurres
 leurrée
-leurs
 leutnant
 leux
 leva
@@ -31724,6 +31696,7 @@ levée
 levées
 levés
 lexicales
+lez
 liama
 lianages
 lianeux
@@ -32313,7 +32286,6 @@ lütfen
 lœss
 m
 m2
-ma
 maaaaal
 maag
 maak
@@ -33286,7 +33258,6 @@ merveilleuses
 merveilleux
 mery
 merées
-mes
 meschugge
 meskhète
 meskina
@@ -33411,10 +33382,6 @@ midazolam
 middle
 midi
 miel
-mien
-mienne
-miennes
-miens
 mierda
 mieu
 mieux
@@ -33777,7 +33744,6 @@ momifiées
 momifiés
 momignards
 momo
-mon
 mona
 monarchiques
 monarchiste
@@ -35097,7 +35063,6 @@ notifiée
 notifiés
 notions
 notons
-notre
 nots
 notte
 notule
@@ -35354,8 +35319,6 @@ nîmoise
 nï
 nô
 nôt
-nôtre
-nôtres
 nôvigôtion
 nœil
 nœils
@@ -37850,6 +37813,7 @@ plaçerons
 plaçons
 plaçâmes
 pleasantly
+please
 pleased
 pleasure
 plein
@@ -43320,7 +43284,6 @@ rôtissages
 rôtisse
 rôtit
 s
-sa
 sab
 sabangas
 sabine
@@ -44148,7 +44111,6 @@ servis
 servisse
 servist
 servons
-ses
 sesterce
 sestra
 setar
@@ -44291,10 +44253,6 @@ sidérée
 sidérés
 sie
 sieaux
-sien
-sienne
-siennes
-siens
 sienstadt
 siento
 siester
@@ -46645,14 +46603,10 @@ tictaquait
 tiek
 tielle
 tiempo
-tien
 tiendrais
 tiendre
 tiendrions
 tiene
-tienne
-tiennes
-tiens
 tiens0
 tierce
 tiercelin
@@ -46784,6 +46738,7 @@ tkoukrien
 tkoukrienne
 tkoukriens
 tla
+to
 tobacco
 toc
 tocard
@@ -49002,7 +48957,6 @@ votes
 votez
 voto
 votr
-votre
 votâmes
 vouair
 vouais
@@ -49206,8 +49160,6 @@ vêtît
 vînmes
 vîtes
 vôleux
-vôtre
-vôtres
 völkisch
 völlige
 vœu

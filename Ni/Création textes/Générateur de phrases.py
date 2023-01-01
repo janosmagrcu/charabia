@@ -21,6 +21,7 @@ def générer(n_phrases):
 
 	phrases = ['.']
 	n = 0
+	profs = []
 
 	while True:
 		prof = min(len(phrases),profondeur_max)
@@ -40,13 +41,15 @@ def générer(n_phrases):
 			else:
 				probas = proba_tables[prof-1][precedents]
 				gram = choices(list(probas.keys()), weights = list(probas.values()), k = 1)[0]
+				profs += [prof]
 				phrases += [gram]
 				break
-
+		
 		if gram in stops|{'-'} and phrases[-2] not in stops: 
 			n += 1
 			if n==n_phrases: break
-
+	prof_moy = sum(profs)/len(profs)
+	print(profs, prof_moy, sep = '\n')
 	# enlever guillemets et parenthèses
 	phrases = [p for p in phrases if p not in {"'",'"','(',')','[',']'}]
 	# enlever les doubles ponctuations consécutives:
@@ -187,8 +190,8 @@ Elle-même poquait sous-prieur Yvonne par désarticulant des anémiques impalas 
 Diable.                                                                                                                                                                                                                            
 Alléluia.                                                                                                                                                                                                                          
 Flamand.                                                                                                                                                                                                                           
-- Adressage Yvonne, pécore au saloir stroboscopique, le Jean-Philippe versus Jean-Philippe, au sloughi ils gémissaient pieusement puis gloussaient dans cette joie carotteuse péniblement réclamait procès-verbal.                 
+- Adressage Yvonne, pécore au saloir stbroboscopique, le Jean-Philippe versus Jean-Philippe, au sloughi ils gémissaient pieusement puis gloussaient dans cette joie carotteuse péniblement réclamait procès-verbal.                 
 """
 
-profondeur_max = 8
-générer(15)
+profondeur_max = 9
+générer(20)
