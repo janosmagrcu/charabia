@@ -14,7 +14,7 @@ def clean(url):
 def wlist(url):
     with open(url,'r') as mots:
         wstr =''
-        for m in mots: wstr += m[:-2]+'%'
+        for m in mots: wstr += m[:-1]+'%'
         assert (' ' not in wstr) and ('\n' not in wstr), 'texte pas normalisé'
         return wstr.split(sep='%')
 

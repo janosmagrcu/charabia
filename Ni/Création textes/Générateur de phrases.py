@@ -193,5 +193,5 @@ Flamand.
 - Adressage Yvonne, pécore au saloir stbroboscopique, le Jean-Philippe versus Jean-Philippe, au sloughi ils gémissaient pieusement puis gloussaient dans cette joie carotteuse péniblement réclamait procès-verbal.                 
 """
 
-profondeur_max = 9
+profondeur_max = 5
 générer(20)
