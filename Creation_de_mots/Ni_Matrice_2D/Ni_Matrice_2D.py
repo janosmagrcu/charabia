@@ -1,7 +1,7 @@
 import os, codecs
 
 local_path = os.path.dirname(__file__)
-file_path = os.path.join(local_path, "Data/liste.de.mots.francais.frgut.txt")
+file_path = os.path.join(local_path, "/../../Data/liste.de.mots.francais.frgut.txt")
 
 
 with codecs.open(file_path, "r", "utf-8") as fichier_mots:

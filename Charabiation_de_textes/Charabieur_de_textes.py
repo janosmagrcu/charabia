@@ -10,8 +10,8 @@ from nltk.tag import StanfordPOSTagger
 local_path = os.path.dirname(__file__)
 
 # NLKTools
-jar = local_path + '/../NLTK Tools/stanford-postagger-full-2020-11-17/stanford-postagger.jar'
-model = local_path + '/../NLTK Tools/stanford-postagger-full-2020-11-17/models/french-ud.tagger'
+jar = local_path + '/../Tools/NLTK_Tools/stanford-postagger-full-2020-11-17/stanford-postagger.jar'
+model = local_path + '/../Tools/NLTK_Tools/stanford-postagger-full-2020-11-17/models/french-ud.tagger'
 
 # Là il faut indiquer l'adresse de Java dans l'ordi
 # os.environ['JAVAHOME'] = 'C:/Program Files (x86)/Common Files/Oracle/Java/javapath'
@@ -38,14 +38,14 @@ def trouveur_extrait(année_voulue, n_mots, ponctuation, local_path):
     pas_lettres = {' ', '\n'} | ponctuation
 
     # Ouvre Goncourt de l'année la plus proche de l'année demandée
-    noms_livres = os.listdir(local_path+'/../Data/Collection Prix Goncourt/txt')
+    noms_livres = os.listdir(local_path+'/../Data/Collection_Prix_Goncourt/txt')
     années = [nom_livre[:4] for nom_livre in noms_livres]
     années_diff = []
     for i,année in enumerate(années) :
         années_diff += [(abs(année_voulue - int(année)), i)]
     titre_voulu = noms_livres[min(années_diff)[1]]
     
-    with codecs.open(local_path+'/../Data/Collection Prix Goncourt/txt/'+titre_voulu, "r", "utf-8") as file:
+    with codecs.open(local_path+'/../Data/Collection_Prix_Goncourt/txt/'+titre_voulu, "r", "utf-8") as file:
         texte = ''.join(unicodedata.normalize('NFC', line) for line in file.readlines())
 
     # Nettoyage texte : pour homogénéiser les espaces et tirets moches
@@ -181,7 +181,7 @@ def charabieur(année_voulue, n_mots, proba_charabia):
     ponctuation = {')', ':', '=','+','!','?',';','-','…','(','}',"'",'’',',','{',']','"','.','['}
     # charge une seule fois le lexicon inversé et les probas qui ont été faites avec
     with open(local_path + '/../Data/Lexicon_inverse.pkl', "rb") as file: lexicon_inv = pickle.load(file)
-    with open(local_path + '/Probas_inv.pkl', "rb") as file: probas_inv = pickle.load(file) # Les probas créés par le code de Joz
+    with open(local_path + '/../Data/Probas/Probas_inv.pkl', "rb") as file: probas_inv = pickle.load(file) # Les probas créés par le code de Joz
 
     extrait = trouveur_extrait(année_voulue, n_mots, ponctuation, local_path)
 
