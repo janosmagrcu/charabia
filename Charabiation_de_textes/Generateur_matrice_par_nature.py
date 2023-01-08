@@ -113,9 +113,9 @@ def create_mat(lmot, dico, alphabet, nb_lettre, lg_max, name = None): #elle sauv
                         mat[i][j][k][p] /= s
 
     if name is not None: #si demandé, elle conserve la matrice dans un fichier pickle ainsi que les variables importantes (car inutilisable sinon)
-        with open(f'Probas_inv_{name}.pkl', 'wb') as f:
+        with open(local_path + f'/../Data/Probas/Probas_inv_{name}.pkl', 'wb') as f:
             pickle.dump(mat, f)
-        with open(f'Variables_{name}.pkl', 'wb') as f:
+        with open(local_path + f'/../Data/Probas/Variables_{name}.pkl', 'wb') as f:
             pickle.dump([dico, alphabet, nb_lettre, lg_max], f)
     return mat
  
