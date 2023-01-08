@@ -183,9 +183,9 @@ def charabieur_mot(mot, gram, dico_charabie):
             starter = 'h'
         choix_debut = 'c'
     name = str(indice)
-    with open(f'Probas_inv_{name}.pkl', "rb") as file_1: 
+    with open(local_path + f'/../Data/Probas/Probas_inv_{name}.pkl', "rb") as file_1: 
         mat = pickle.load(file_1)
-    with open(f'Variables_{name}.pkl', 'rb') as file_2:
+    with open(local_path + f'/../Data/Probas/Variables_{name}.pkl', 'rb') as file_2:
             Variables = pickle.load(file_2)
     mot_new = create_word(mat, Variables[0], Variables[1], consonnes, voyelles,  choix_debut = choix_debut, starter=starter)
     while len(mot_new) < 4: #création de mot de longueur 4 minimum
@@ -207,7 +207,7 @@ def charabieur(année_voulue, n_mots, proba_charabia):
     ponctuation = {')', ':', '=','+','!','?',';','-','…','(','}',"'",'’',',','{',']','"','.','['}
     # charge une seule fois le lexicon inversé et les probas qui ont été faites avec
     with open(local_path + '/../Data/Lexicon_inverse.pkl', "rb") as file: lexicon_inv = pickle.load(file)
-    with open(local_path + '/../Data/Probas/Probas_inv.pkl', "rb") as file: probas_inv = pickle.load(file) # Les probas créés par le code de Joz
+    # Les probas créés par le code de Joz
 
     extrait = trouveur_extrait(année_voulue, n_mots, ponctuation, local_path)
 
