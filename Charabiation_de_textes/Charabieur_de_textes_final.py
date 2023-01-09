@@ -6,7 +6,7 @@ Mais du charabia précis : créé à partir de mots de la même nature que le mo
 
 import codecs, unicodedata, os, pickle, random, re
 from nltk.tag import StanfordPOSTagger
-from Generateur_matrice_par_nature import create_word
+from Generateur_matrice_par_nature import create_word, create_mat_charabiation
 
 local_path = os.path.dirname(__file__)
 
@@ -15,10 +15,23 @@ jar = local_path + '/../Tools/NLTK_Tools/stanford-postagger-full-2020-11-17/stan
 model = local_path + '/../Tools/NLTK_Tools/stanford-postagger-full-2020-11-17/models/french-ud.tagger'
 
 # Là il faut indiquer l'adresse de Java dans l'ordi
-# os.environ['JAVAHOME'] = 'C:/Program Files (x86)/Common Files/Oracle/Java/javapath'
-os.environ['JAVAHOME'] = 'C:/Program Files/Java/jre1.8.0_351/'
+# exemple alternatif pour Windows : 'C:/Program Files (x86)/Common Files/Oracle/Java/javapath'
+
+# on peut utiliser 'sudo find /name Java' dans un shell bash par ex
+
+import platform
+import tkinter.messagebox as tkmsg
+name_os = platform.system()
+os.environ['JAVAHOME'] = '' # <—————— si ça ne marche pas (Linux ou autres problèmes), remplir ici
+
+if os.environ['JAVAHOME'] == '':
+    if name_os == 'Darwin': os.environ['JAVAHOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java'
+    elif name_os == 'Windows': os.environ['JAVAHOME'] = 'C:/Program Files/Java/jre1.8.0_351/'
+    else: tkmsg.showinfo(title='OS', message='Veuillez télécharger Java si ce n\'est pas déjà fait. Si le problème persiste, indiquez manuellement l\'emplacement de Java sur votre ordinateur à la ligne 22 de ce code.')
 
 pos_tagger = StanfordPOSTagger(model, jar, encoding='utf8' )
+
+if not os.path.exists(local_path + '/../Data/Probas/gram_liste.pkl') : create_mat_charabiation() 
 
 #liste de toutes les natures à charabier
 with open(local_path + '/../Data/Probas/gram_liste.pkl', 'rb') as file:
@@ -135,7 +148,7 @@ def grammatise(extrait, local_path):
     with open(local_path + '/../Data/Lexicon_simplifié.pkl', "rb") as file: 
         lexicon = pickle.load(file)
     # noms propres
-    with open(local_path + '/../Data/noms_propres.txt', "r") as file: 
+    with open(local_path + '/../Data/noms_propres.txt', "r", encoding = 'latin-1') as file: 
         noms_propres = set(file.readlines())
     grams_equivalence = {"ADJ":{"ADJ"},"ADP":{"PRE"},"ADV":{"ADV"},"AUX":{"AUX"},"CCONJ":{"CON"},"DET":{"ART"},"INTJ":{"ONO"},
     "NOUN":{"NOM"},"NUM":{"ADJ"},"PART":set(),"PRON":{"PRO"},"PROPN":{"NPR"},"PUNCT":set(),"SCONJ":{"CON"},"SYM":{"NOM"},
@@ -271,10 +284,14 @@ def charabieur(année_voulue, proba_charabia, gros_texte, n_mots = None, goncour
     print()
     print(extrait_charabié)
 
-while True:
-    while True:
-        goncourt = input('Quel texte voulez-vous charabier ? Pour un Goncourt tapez : g, pour un fichier texte t, ou sinon n\'importe quoi : ')
+continuer = True
+while continuer:
+    while continuer:
+        goncourt = input('Quel texte voulez-vous charabier ? Pour un Goncourt tapez : g, pour un fichier texte : t, pour quitter : q, ou sinon n\'importe quoi : ')
         gros_texte = False
+        if goncourt == 'q' or goncourt == 'Q' :
+            continuer = False
+            break
         if goncourt == 'g' or goncourt == 'G':
             gros_texte = True 
             année_voulue = input("Année du Goncourt à charabier (entre 1903 et 2022) : ")
@@ -308,7 +325,7 @@ while True:
         except: 
             print("Eh on a dit nombre") 
 
-    proba_charabia = 0.6 # proba de charabia parmi les mots que l'on peut et veut charabier
+    proba_charabia = 0.5 # proba de charabia parmi les mots que l'on peut et veut charabier
 
     charabieur(année_voulue, proba_charabia, gros_texte, n_mots = n_mots, goncourt = goncourt)
     print()

@@ -205,7 +205,6 @@ def create_mat_charabiation():
         liste_mot = list(lexicon_inv[gram_liste[i]].keys())
         Variable = variables_utiles_liste(liste_mot)
         create_mat(liste_mot, Variable[0], Variable[1], Variable[2], Variable[3], name = str(i))
+        
 
-  
-
-#create_mat_charabiation()
+        
