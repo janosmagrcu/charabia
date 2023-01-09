@@ -1,3 +1,6 @@
+## fichier qui regroupe plein de fonctions utiles pour la gestion et l'analyse de fichiers textuels
+
+
 # pour transformer un document texte quelconque en document normalisé exploitable (enregistré sous nom__.txt)
 def clean(url):
     import re

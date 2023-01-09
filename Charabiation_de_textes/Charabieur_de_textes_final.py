@@ -15,8 +15,10 @@ jar = local_path + '/../Tools/NLTK_Tools/stanford-postagger-full-2020-11-17/stan
 model = local_path + '/../Tools/NLTK_Tools/stanford-postagger-full-2020-11-17/models/french-ud.tagger'
 
 # Là il faut indiquer l'adresse de Java dans l'ordi
+
 # os.environ['JAVAHOME'] = 'C:/Program Files (x86)/Common Files/Oracle/Java/javapath'
-os.environ['JAVAHOME'] = 'C:/Program Files/Java/jre1.8.0_351/'
+#os.environ['JAVAHOME'] = 'C:/Program Files/Java/jre1.8.0_351/'
+os.environ['JAVAHOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java'
 
 pos_tagger = StanfordPOSTagger(model, jar, encoding='utf8' )
 
