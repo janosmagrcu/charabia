@@ -1,20 +1,27 @@
-def debut(url):
+## Dans ce code le but est de tester comment le code 'amélioré' résiste à l'utilisation itérée, 
+## cad on donne en entrée au code 'amélioré' ce qu'il vient de produire en sortie.
+## C'est également une version exclusivement fonctionnelle du programme 'amélioré"
+
+# cette fonction permet d'ouvrir un document texte et le rendre facilement exploitable, et renvoie une liste de mots
+def debut(texte):
     import codecs,unicodedata
+    import os
+    local_path = os.path.dirname(__file__)
 
     lmot=[]
-    with codecs.open(url, 'r', encoding='utf-8') as mots:
+    with codecs.open(local_path + '/../Data/' + texte, 'r', encoding='utf-8') as mots:
             for l in mots:
                 l = l.lower()
                 nk = unicodedata.normalize('NFKD', l)
-                mot = nk.encode('ASCII', 'ignore') #enlever les accents
+                mot = nk.encode('ASCII', 'ignore') # enlever les accents
                 lmot.append(str(mot)[2:-2])
     return(lmot)
     
-
-def mdico(url):
-    #création d'un dictionnaire des listes de mots par taille
+# création d'un dictionnaire des listes de mots par taille
+def mdico(texte):
+    
     dico = {}
-    for mot in debut(url):
+    for mot in debut(texte):
         if len(mot) in dico.keys():
             dico[len(mot)].append(mot)
         else:
@@ -22,7 +29,7 @@ def mdico(url):
     return dico
 
 
-#fonction qui va donner le numéro d'une lettre
+# fonction qui va donner le numéro d'une lettre
 def id(lettre):
     return ord(lettre) - 97
 
@@ -30,20 +37,17 @@ def id(lettre):
 def di(indice):
     return chr(indice + 97)
 
-def proba(url):
+# fonction qui crée la matrice de probabilités à l'aide des fonctions créées précédemment
+def proba(texte):
     global lmot
     nb_lettre = 26
-    #nb_mot = int(len(lmot))
-    lg_max = max(mdico(url).keys()) # max(lmot,len)
-    #consonnes = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v',  'w', 'x', 'z']
-    #voyelles = ['a', 'e', 'i', 'o', 'u', 'y']
+    lg_max = max(mdico(texte).keys())
 
 
-
-    #initialisation de la matrice des probas
+    # initialisation de la matrice des probas
     mat = [[[[0 for p in range(nb_lettre + 1)] for k in range(lg_max)] for i in range(nb_lettre + 1)]for j in range(nb_lettre + 1)]
 
-    #comptage 
+    # comptage 
     for mot in lmot:
         if len(mot) == 0: continue
         if '-' in mot:
@@ -54,17 +58,16 @@ def proba(url):
             lmot.append(mot2)
         else:
             L = len(mot)
-            mat[-1][-1][0][id(mot[0])] += 1 #proba de la première lettre
+            mat[-1][-1][0][id(mot[0])] += 1 # proba de la première lettre
             if L >= 2:
-                mat[-1][id(mot[0])][0][id(mot[1])] += 1 #proba de la deuxième lettre
+                mat[-1][id(mot[0])][0][id(mot[1])] += 1 # proba de la deuxième lettre
                 for i in range(1, L-2):
-                    mat[id(mot[i-1])][id(mot[i])][i][id(mot[i+1])] += 1 #proba de lettre suivant la i-eme lettre
-                mat[id(mot[L-2])][id(mot[L-1])][L-1][-1] += 1 #proba d'être la dernière lettre
+                    mat[id(mot[i-1])][id(mot[i])][i][id(mot[i+1])] += 1 # proba de lettre suivant la i-eme lettre
+                mat[id(mot[L-2])][id(mot[L-1])][L-1][-1] += 1 # proba d'être la dernière lettre
             if L == 1:
-                mat[-1][id(mot[0])][0][-1] += 1  ## faut retirer les mots de 1 lettre ??
+                mat[-1][id(mot[0])][0][-1] += 1
 
-    #division pour obtenir des probas
-
+    # division pour obtenir des probas
     for i in range(nb_lettre + 1):
         for j in range(nb_lettre + 1):
             for k in range(lg_max):
@@ -77,8 +80,8 @@ def proba(url):
     return mat
 
 
-#creation de mots
-def next_l(*l_1, pos = 0): #l_1 tuple qui contient (l-1, l)
+# creation de la prochaine lettre, étant données les deux précédentes et la position dans le mot
+def next_l(*l_1, pos = 0): # l_1 tuple qui contient (l-1, l)
     import random
     nb_lettre = 26
     global mat 
@@ -93,9 +96,9 @@ def next_l(*l_1, pos = 0): #l_1 tuple qui contient (l-1, l)
             return prob
         except:
             return '{'
-        #return (random.choices(liste_lettres, weights = mat[id(l_1[0])][id(l_1[1])][pos]))[0]
-
-def create_word(strip=False):
+        
+# fonction qui crée un mot
+def create_word():
     lettre1 = next_l()
     while lettre1 == '{':
         lettre1 = next_l()
@@ -111,86 +114,75 @@ def create_word(strip=False):
         u += 1
     return mot
 
+# fonction qui crée le nombre de mots désiré et les enregistre dans un document .txt au nom 'out'
+# (le booléen strip est utilisé dans le cas récursif, pour éviter un problème de troncature progressive de la fin des mots)
+def create_words(texte,n,out='charabia_ameliore.txt',strip=False):
+    import os 
+    local_path = os.path.dirname(__file__)
 
-def create_words(url,n,out='charabia.txt',strip=False):
     global lmot,mat
-    lmot = debut(url)
-    mat = proba(url)
-    charabia = open(out, 'w')
+    lmot = debut(texte)
+    mat = proba(texte)
+    charabia = open(local_path + '/../Resultats/' + out, 'w')
     for i in range(n):
-        word = create_word(url)
+        word = create_word()
         if strip: word = word.replace('{','')
         charabia.writelines(word)
         charabia.writelines('\n')
     charabia.close()
 
-
-def recursive_words(url,n,k):
+# fonction finale qui itère le procédé de création des mots de n mots, elle crée k documents .txt qu'elle 
+# supprime au fur et à mesure et garde la k-ème
+def recursive_words(texte,n,k):
     import os
-    nom = url[:-5]
-    url_out = 'rec_0.txt'
-    create_words(url,n,out=url_out)
+    local_path = os.path.dirname(__file__)
+
+    nom = local_path + '/../Resultats/' + texte[:-5]
+    rec_nom = local_path + '/../Resultats/'
+    texte_out = 'rec_0.txt'
+    create_words(texte,n,out=texte_out)
     for j in range(k-1):
-        create_words(f'rec_{j}.txt',n,out = f'rec_{j+1}.txt')
-        os.remove(f'rec_{j}.txt')
+        create_words(f'/../Resultats/rec_{j}.txt',n,out = f'rec_{j+1}.txt')
+        os.remove(rec_nom + f'rec_{j}.txt')
     if os.path.exists(nom + f'rec_{k}.txt'):
         m = 1
         while os.path.exists(nom + f'rec_{k}_{m}.txt'):
             m += 1
-        create_words(f'rec_{k-1}.txt',n,out = (nom + f'rec_{k}_{m}.txt'),strip=True)
-    else : create_words(f'rec_{k-1}.txt',n,out = (nom + f'rec_{k}.txt'),strip=True)
-    os.remove(f'rec_{k-1}.txt')
+        create_words(f'/../Resultats/rec_{k-1}.txt',n,out = texte[:-5] + f'rec_{k}_{m}.txt',strip=True)
+    else : create_words(f'/../Resultats/rec_{k-1}.txt',n,out = texte[:-5] + f'rec_{k}.txt',strip=True)
+    os.remove(rec_nom + f'rec_{k-1}.txt')
 
-def rec_stat(url,n,k):
+def rec_stat(texte,n,k):
     import os,sys,math
     import matplotlib.pyplot as plt
     import numpy as np
-    #import scipy.special as spe
-    sys.path.append('/Users/jonas/Desktop/Cours/Info/projet')
-    sys.path.append('/Users/jonas/Desktop/Cours/Info/projet/Stats')
-    sys.path.append('/users/jonas/Desktop/Cours/Info')
+
+    local_path = os.path.dirname(__file__)
+
+    # /!\ le texte source doit se trouver dans le dossier 'Data'
+    sys.path.append(local_path + '/../Data/' + texte)
+
     from moy_glissante import moy_glis,lissage_2
-    from levenshtein import levenshtein
     from edition_texte import wlist
 
     X = [i for i in range(k+1)]
     nbr_mots_differents = []
     
-    url_out = 'rec_0.txt'
-    create_words(url,n,out=url_out)
-    W = wlist(url_out)
-    ref = W[1]
+    texte_out = 'rec_0.txt'
+    create_words(texte,n,out=texte_out)
+    W = wlist(texte_out)
     nbr_mots_differents.append(len(np.unique(np.array(W))))
 
     for j in range(k):
-        url_out = f'rec_{j+1}.txt'
-        create_words(f'rec_{j}.txt',n,out = url_out)
-        W = wlist(url_out)
-        ref = W[1]
+        texte_out = f'rec_{j+1}.txt'
+        create_words(f'rec_{j}.txt',n,out = texte_out)
+        W = wlist(texte_out)
         nbr_mots_differents.append(len(np.unique(np.array(W))))
     os.remove(f'rec_{k}.txt')
 
-    #bord = int(math.sqrt(k))
-    #Y = lissage_2(Lev,bord)[bord:-1*bord]
-    nbr_mots_differents_log = [math.log(nbr) for nbr in nbr_mots_differents]
     plt.plot(X,nbr_mots_differents)
-    #plt.plot(X[bord:-1*bord],Y,'r')
     plt.show()
             
 
-
-def create_verbs(n):
-    liste_term_troisieme_groupe = ['bre', 'cre', 'dre', 'fre', 'gre', 'hre', 'jre', 'kre', 'lre', 'mre', 'nre', 'pre', 'qre', 'rre', 'sre', 'tre', 'vre', 'wre', 'xre', 'zre', 'ire']
-    charabia = open('verbs_charabia.txt', 'w')
-    for i in range(n):
-        mot = create_word()
-        while mot[-2:] not in ['er', 'ir'] and mot[-3:] not in liste_term_troisieme_groupe:
-            mot = create_word()
-        charabia.writelines(mot)
-        charabia.writelines('\n')
-    charabia.close()
-
-
-
-create_words("D:/__CPES/___L2/Informatique/Projet/charabia/mots_francais.txt", 100)
+recursive_words('mots_francais.txt',1000,100)
 

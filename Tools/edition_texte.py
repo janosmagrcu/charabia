@@ -36,11 +36,10 @@ def stat(url,comp=None,normale=False,expo=False):
     import matplotlib.pyplot as plt
     import statistics as stat
     import math
+    
 
     lenlist = lengths(wlist(url))
     Max = len(lenlist)
-
-    #print(wlist(url))
 
     X = [i+1 for i in range(Max)]
     data = []
@@ -48,16 +47,19 @@ def stat(url,comp=None,normale=False,expo=False):
     l = len(data)
     mu = stat.fmean(data)
     sigma = stat.pstdev(data,mu)
-    #print(f'mu = {mu}, sigma = {sigma}')
     A = [n/l for n in lenlist]
 
-    if comp == 'dico':
-        lenlist_dico = lengths(wlist('mots_francais.txt'))
+    # comparaison avec le dico des mots français
+    if comp == 'dico': 
+        import os
+        local_path = os.path.dirname(__file__)
+
+        lenlist_dico = lengths(wlist(local_path + '/../Data/mots_francais.txt'))
         l_dico = sum(lenlist_dico)
         C = [n/l_dico for n in lenlist_dico]
         plt.plot(X,C,label='Dictionnaire')
 
-
+    # comparer à la répartition typique dans des textes en français
     if comp == 'text':
         # les chiffres viennent du site : http://linguistiques.muroni.free.fr/linguistiques/longueurdesmots.html
         # pas hésiter à aller voir le site Hyperbase pour des grosses bases de données textuelles plurilingues
@@ -72,12 +74,13 @@ def stat(url,comp=None,normale=False,expo=False):
         C = [n/l_comp for n in lenlist_comp]
         plt.plot(X,C,label=comp)
 
-
+    # modéliser par une distribution normale (mémoire)
     if normale == True:
         N = lambda x : math.exp(-0.5*((x-mu)/sigma)**2)/(sigma*math.sqrt(2*math.pi))
         Y = [N(i) for i in X]
         plt.plot(X,Y,label=f'Normale mu={round(mu,1)} sigma={round(sigma,2)}')
 
+    # modéliser par une distribution exponentielle décroissante (sans mémoire)
     if expo == True:
         alpha = 1/sigma
         E = lambda x : alpha*math.exp(-x*alpha)
