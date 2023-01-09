@@ -137,7 +137,7 @@ def recursive_words(texte,n,k):
     import os
     local_path = os.path.dirname(__file__)
 
-    nom = local_path + '/../Resultats/' + texte[:-5]
+    nom = local_path + f'/../Resultats/{texte[:-4]}'
     rec_nom = local_path + '/../Resultats/'
     texte_out = 'rec_0.txt'
     create_words(texte,n,out=texte_out)
@@ -148,8 +148,8 @@ def recursive_words(texte,n,k):
         m = 1
         while os.path.exists(nom + f'rec_{k}_{m}.txt'):
             m += 1
-        create_words(f'/../Resultats/rec_{k-1}.txt',n,out = texte[:-5] + f'rec_{k}_{m}.txt',strip=True)
-    else : create_words(f'/../Resultats/rec_{k-1}.txt',n,out = texte[:-5] + f'rec_{k}.txt',strip=True)
+        create_words(f'/../Resultats/rec_{k-1}.txt',n,out = texte[:-4] + f'_rec_{k}_{m}.txt',strip=True)
+    else : create_words(f'/../Resultats/rec_{k-1}.txt',n,out = texte[:-4] + f'_rec_{k}.txt',strip=True)
     os.remove(rec_nom + f'rec_{k-1}.txt')
 
 def rec_stat(texte,n,k):
