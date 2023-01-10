@@ -184,9 +184,10 @@ def create_word(mat, dico, alphabet, consonnes, voyelles,  choix_debut = None, s
     return mot[:-1]
 
 
-def create_words(mat, dico, alphabet, consonnes, voyelles, n, url): #fonction creéant une liste de n pseudo-mot dans un fichier texte
-    nom = url + '.txt'
-    charabia = open(nom, 'w')
+#fonction creéant une liste de n pseudo-mot dans un fichier texte dans Resultats
+def create_words(mat, dico, alphabet, consonnes, voyelles, n, url): 
+    nom = local_path + f'/../Resultats/{url}.txt'
+    charabia = open(nom, 'x')
     for i in range(n):
         charabia.writelines(create_word(mat,dico, alphabet, consonnes, voyelles))
         charabia.writelines('\n')
@@ -196,25 +197,27 @@ def create_words(mat, dico, alphabet, consonnes, voyelles, n, url): #fonction cr
 #PROGRAMME CREANT UNE LISTE DE 10 000 PSEUDO-MOTS FRANCAIS 
 
 
-
-name = local_path + '/../Data/mots_francais.txt'
+name = local_path + '/../Data/mots_francais.txt' # <–––––– on peut changer le texte source ici
 lmot = from_text_to_list(name, remplacements)
 lower(lmot)
 
-#principales variables
-dico, alphabet, nb_lettre, lg_max = variables_utiles_liste(lmot)
-consonnes, voyelles = cons_voy(alphabet)
-liste_term_troisieme_groupe = ['bre', 'cre', 'dre', 'fre', 'gre', 'hre', 'jre', 'kre', 'lre', 'mre', 'nre', 'pre', 'qre', 'rre', 'sre', 'tre', 'vre', 'wre', 'xre', 'zre', 'ire']
+# teste si les matrices de probas existent
+if not os.path.exists(local_path + '/../Data/Probas_inv_francais.pkl'):
 
-mat = create_mat(lmot, dico, alphabet, nb_lettre,  lg_max, name = 'français')
+    #principales variables
+    dico, alphabet, nb_lettre, lg_max = variables_utiles_liste(lmot)
+    consonnes, voyelles = cons_voy(alphabet)
+    
+    mat = create_mat(lmot, dico, alphabet, nb_lettre,  lg_max, name = 'français')
 
 #si  le fichier existe déjà
-'''with open('matrice_transition_français', 'rb') as file: 
-    mat = pickle.load(file)
+else:
+    with open(local_path + '/../Data/Probas_inv_francais.pkl', 'rb') as file: 
+        mat = pickle.load(file)
 
-with open('variables_relatives_a_français', 'rb') as file:
-    dico, alphabet, nb_lettre, lg_max = pickle.load(file)
-'''
-consonnes, voyelles = cons_voy(alphabet)
+    with open(local_path + '/../Data/Variables_francais.pkl', 'rb') as file:
+        dico, alphabet, nb_lettre, lg_max = pickle.load(file)
+        consonnes, voyelles = cons_voy(alphabet)
 
-create_words(mat, dico,  alphabet, consonnes, voyelles, 10000, 'Charabia_final')
+
+create_words(mat, dico,  alphabet, consonnes, voyelles, 10000, 'mots_ameliores') # <—————— et changer le nom ici
