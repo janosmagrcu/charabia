@@ -53,7 +53,7 @@ def words_naif(texte):
             text = l + text
         text = text.replace(' ','\n')
 
-    # on crée les mots dans un fichier texte 'nom_naif_3D.txt'
+    # on crée les mots dans un fichier texte '[nom]_naif_3D.txt'
     with open(local_path + f'/../Resultats/{texte[:-4]}_naif_3D.txt','w',-1,'utf8') as lines:
         lines.write(text)
 
