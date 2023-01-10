@@ -52,7 +52,7 @@ def trouveur_extrait(année_voulue, ponctuation, local_path, gros_texte, n_mots 
     renvoie un extrait de n phrases du livre dont l'année est la plus proche de l'année voulue, sous forme de liste  
     """
     stops = {'.','?','!'}
-    pas_lettres = {' ', '\n'} | ponctuation
+    pas_lettres = {' ', '\n', '\r'} | ponctuation
     if gros_texte:
         if goncourt == 'g':
         # Ouvre Goncourt de l'année la plus proche de l'année demandée
@@ -277,8 +277,6 @@ def charabieur(année_voulue, proba_charabia, gros_texte, n_mots = None, goncour
                 if on_charabie :
                     mot = charabieur_mot(mot, gram, dico_charabie)
                     extrait_gram[i] = (mot,gram)
-        if gram == 0:
-            continue
     extrait_charabié = ''.join([m for m,g in extrait_gram])
 
     print()
