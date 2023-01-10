@@ -1,3 +1,14 @@
+'''
+Programme qui conjugue un grand nombre de verbes sans erreurs au présent, futur et imparfait
+Il choisit avec une certaine probabilités de conjuguer un verbe dont la terminaison n'indique pas totalement le modèle de conjugaison selon tel ou tel modèle.
+Les exceptions trop spécifiques (comme prendre,  aller, être,  avoir, écrire ou boire) ne peuvent pas être conjuguées correctement.
+Les  temps composés sont possible, mais donnent des résultats assez insatisfaisants du fait qu'il n'y a aucune règle concernant la formation du participe passé 
+pour des verbes du deuxième et troisième groupe.
+'''
+
+
+
+
 consonnes = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v',  'w', 'x', 'z']
 voyelles = ['a', 'e', 'i', 'o', 'u', 'y']
 term = {}
@@ -6,7 +17,7 @@ term['futur'] = ['ai', 'as', 'a', 'ons', 'ez', 'ont']
 term['imparfait'] = {}
 term['simple'] = {}
 
-
+#création de 5 groupes de terminaisons de verbes
 term['present'][1] = ['e', 'es', 'e', 'ons', 'ez', 'ent']
 term['present'][2] = ['s', 's', 't', 'ons', 'ez', 'ent']
 term['present'][4] = ['iens', 'iens', 'ient', 'enons', 'enez', 'iennent']
@@ -22,11 +33,7 @@ term['imparfait'][5] = ['ais', 'ais', 'ait', 'ions', 'iez', 'aient']
 avoir = {}
 avoir['present'] = ['ai', 'as', 'a', 'avons', 'avez', 'ont']
 
-term['simple'][1] = ['ai', 'as', 'a', 'ames', 'ates', 'èrent']
-term['simple'][2] = ['is', 'is', 'it', 'imes', 'ites', 'irent']
-term['simple'][3] = ['is', 'is', 'it', 'imes', 'ites', 'irent']
-term['simple'][4] = ['ins', 'ins', 'int', 'inmes', 'intes', 'inrent']
-term['simple'][5] = ['s', 's', 't', 'mes', 'tes', 'rent']
+
 
 
 
@@ -37,7 +44,8 @@ class Verbe():
     def __init__(self, verbe):
         self.verbe = verbe
     
-
+    #cette méthode prend un verbe et crée ses attributs : son radical rad, son "groupe" grp, 
+    #et de nombreuses lettres vocaliques qui modulent selon les personnes la prononciation du verbe
     def rad_grp(self):
         self.lettre_cachee_sing = ''
         self.lettre_vocalique_1_2 = ''
@@ -69,7 +77,7 @@ class Verbe():
                     self.ton_part = 'u'
                     self.part_pass = self.verbe[:-3] + self.ton_part
                     return None
-                if rd_int_2 == 1:  #vouloir
+                if rd_int_2 == 1:  #vouloir, pouvoir, falloir
                     self.grp = 5
                     self.rad = self.verbe[:-3]
                     while self.rad[-1] in consonnes: 
@@ -94,7 +102,7 @@ class Verbe():
                 self.ton_part = 'u'
                 self.part_pass = self.rad + self.ton_part
                 return None
-            elif self.verbe[-4:] == 'enir': #venir
+            elif self.verbe[-4:] == 'enir': #venir,  tenir
                 self.term = 'enir'
                 self.rad = self.verbe[:-4]
                 self.grp = 4
@@ -203,7 +211,7 @@ class Verbe():
                 self.part_pass = self.verbe[:-4] + self.ton_part
                 return None
             self.term = 'ire'
-            if self.verbe[-4:] == 'aire':
+            if self.verbe[-4:] == 'aire': #faire
                 self.term ='aire'
             self.rad = self.verbe[:-2]
             self.grp = 2
@@ -215,7 +223,7 @@ class Verbe():
                 self.ton_part = 'it'
             self.part_pass = self.verbe[:-3] + self.ton_part
             return None
-        else: #corrompre
+        else: #rompre
             self.term = 're'
             self.rad = self.verbe[:-2]
             self.grp = 2
@@ -269,7 +277,7 @@ class Verbe():
         return futur + term['futur'][pers - 1]
     
 
-    def mod(self):
+    def mod(self): #fonction qui permet d'ajouter un e après des g pour (comme dans mangeons)
         mod = ''
         if self.rad[-1] == 'g':
             mod = 'e'
@@ -289,25 +297,8 @@ class Verbe():
         if tps == 'passe':
             return avoir['present'][pers - 1] + ' ' + self.part_pass
 
-        
-    def passe_simple(self, pers, nb):
-        if nb == 'plur':
-            pers += 3
-        if self.grp == 1 or self.grp ==4:
-            return self.rad + self.mod() + term['simple'][self.grp][pers - 1]
-        simple = self.rad
-        if self.grp == 3 or self.term == 'ndre' or len(self.lettre_cachee_plur) == 2 and self.lettre_cachee_plur != 'ss': 
-            simple += self.lettre_cachee_plur
-        else:
-            n = len(self.term)
-            simple = self.verbe[:-n]
-        return simple + term['simple'][self.grp][pers - 1]
 
 
-
-abattre = Verbe('indonorionneraire')
-abattre.rad_grp()
-print(abattre.present( 1, 'plur'))
-print(abattre.grp, abattre.lettre_cachee_plur, abattre.lettre_vocalique_1_2, abattre.lettre_vocalique_4_5,  abattre.rad)
-
+abattre = Verbe('abattre')
+print(abattre.present(1, 'plur'))
 
