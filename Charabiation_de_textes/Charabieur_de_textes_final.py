@@ -287,6 +287,7 @@ while continuer:
     while continuer:
         goncourt = input('Quel texte voulez-vous charabier ? Pour un Goncourt tapez : g, pour un fichier texte : t, pour quitter : q, ou sinon n\'importe quoi : ')
         gros_texte = False
+        retour = False
         if goncourt == 'q' or goncourt == 'Q' :
             continuer = False
             break
@@ -308,6 +309,8 @@ while continuer:
                     année_voulue = ''.join(unicodedata.normalize('NFC', line) for line in file.readlines())
             except:
                 print('Fichier non trouvé')
+                gros_texte = False
+                retour = True
             break
         else:
             année_voulue = input('Saisissez le texte à charabier : ') 
@@ -324,8 +327,8 @@ while continuer:
             print("Eh on a dit nombre") 
 
     proba_charabia = 0.5 # proba de charabia parmi les mots que l'on peut et veut charabier
-
-    charabieur(année_voulue, proba_charabia, gros_texte, n_mots = n_mots, goncourt = goncourt)
+    if not retour:
+        charabieur(année_voulue, proba_charabia, gros_texte, n_mots = n_mots, goncourt = goncourt)
     print()
 
 """
