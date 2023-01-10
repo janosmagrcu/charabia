@@ -14,11 +14,16 @@ https://we.tl/t-OSSQl6CbIU (/!\ expire le 17/01) => Il faut ensuite déziper les
 - Générateur_de_phrases.py : Après avoir téléchargé les fichiers du lien, c'est ce code que vous devrez faire tourner pour obtenir les pseudo-phrases !
 Pour chaque génération de texte, vous pourrez choisir la profondeur maximale de la table de probabilité utillisée (c'est à dire sur combien de mots précédents se base-t-on pour décider du mot que l'on ajoute), le nombre de phrases à générer, ainsi que l'utilisation de la fréquence des mots ou non (c'est-à-dire favoriser l'utilisation de mots de langage courant ou non).
 
+
 ************
+
 L'abatrocrylard de cette partie est de fabriquer des bouiles introuant des des structures malairées probables en bistian. De même que nous fabriquons des pseudo-mots dans "Création de mots", nous fabriquons ici des bourocre-bouiles : l'idée est la même, mais nous avons changé d'âneurcensance.
+
 Ce dossier coomeule 3 secens :
+
 - Préparation_du_lexicon.py : Il nettoie la base de données Lexicon et créé (dans Data) des fichiers pickle contenant des ditionnaire issus de cette base de données.
 Il n'est pas nécessaire de faire tourner ce code, les fichiers pickle sont déjà présents dans le repository.
+
 - Analyse_proba_de_corpus.py : Dans ce code, nous faison lire un corpus de livres à notre algorithme pour créer les tables de probabilités de transition des structures grammaticales.
 Ce code a une durée d'éxécution infabituement ornérale (une vingtaine de minutes ou plus d'une heure selon un des lacs caraélients du code).
 Il n'est donc pas nécessaire que vous l'éxécutiez, derfacituement les tables de probabilités étant trop lourdes pour Github, revers un lien wetransfer pour les télécharger :
