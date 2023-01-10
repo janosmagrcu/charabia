@@ -12,7 +12,7 @@ Prend une trentaine de secondes
 """
 
 local_path = os.path.dirname(__file__)
-wb = load_workbook(local_path + "/Data/Lexique383 - avec fréquences.xlsx")
+wb = load_workbook(local_path + "/../Data/Lexique383 - avec fréquences.xlsx")
 sheet = wb.active
 
 lexicon = {}
@@ -84,6 +84,7 @@ corrections = {
 	"ira": {'VER_ind:fut:3s':28},
 	"o": {'NOM_m':11},
 	"team": {'NOM_m_s':0.2},
+	"main": {'NOM_f_s':788},
 	"à brûle-pourpoint": {'ADV':1.22},
 	"à cloche-pied": {'ADV':1.35},
 	"à rebrousse-poil": {'ADV':0.81},
@@ -158,8 +159,8 @@ for mot,gram in lexicon.items():
 		lexicon_inv[g] = lexicon_inv.get(g,{}) | {mot:frq}
 
 # pickle dump
-with open(local_path + '/Data/Lexicon_simplifié.pkl', 'wb') as f:
+with open(local_path + '/../Data/Lexicon_simplifié.pkl', 'wb') as f:
     pickle.dump(lexicon, f)
 
-with open(local_path + '/Data/Lexicon_inverse.pkl', 'wb') as f:
+with open(local_path + '/../Data/Lexicon_inverse.pkl', 'wb') as f:
     pickle.dump(lexicon_inv, f)

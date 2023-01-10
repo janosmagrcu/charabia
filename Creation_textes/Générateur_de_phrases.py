@@ -1,18 +1,17 @@
 import os, pickle
-from random import choices, choice
-from math import tau,pi
+from random import choices, choice, gauss
 from num2words import num2words
 
 
-def chargement(profondeur_max):
+def chargement(profondeur_max, avec_nltk):
 
 	local_path = os.path.dirname(__file__)
-	with open(local_path + '/Data/Lexicon_inverse.pkl', "rb") as file:
+	with open(local_path + '/../Data/Lexicon_inverse.pkl', "rb") as file:
 		lexicon_inv = pickle.load(file)
 
 	proba_tables = [None]*profondeur_max
 	for prof in range(profondeur_max):
-		with open(local_path + f'/Transitions Tables/Syntaxe_proba_profondeur_{prof+1}.pkl', "rb") as file:
+		with open(local_path + f'/../Data/Probas/Creation_textes_{("","nltk_")[avec_nltk]}Proba_profondeur_{prof+1}.pkl', "rb") as file:
 			proba_tables[prof] = pickle.load(file)
 		print(f"table prof {prof+1} - {len(proba_tables[prof])} entrées")
 
@@ -20,168 +19,218 @@ def chargement(profondeur_max):
 
 def générer(n_phrases, profondeur, frequence):
 
-	ponctuation = {')', ':', '=','+','!','?',';','-','…','(','}',"'",',','{',']','"','.','['}
-	stops = {'.','?','!','…'}
+	ponctuation = '):=+!?;-…(}\',{]".['
+	stops = '.?!…'
 
-	phrases = ['.']
+	# Tout d'abord on part d'un point et on génère des squelettes grammaticaux de phrases
+	# en utilisant les probas de transition
+
+	squelette = ['.']
 	n = 0
-
+	sécurité = 0
 	while True:
+		
+		sécurité += 1
+		if sécurité > 10000: # pour éviter de rares boucles sans ponctuations
+			générer(n_phrases, profondeur, frequence)
+			return
 
-		prof = min(len(phrases),profondeur)
+		prof = min(len(squelette),profondeur)
 
 		while True:
-			precedents = tuple(phrases[-prof:])
+			precedents = tuple(squelette[-prof:])
 			if precedents not in proba_tables[prof-1]:
 				prof -= 1
-				if prof==0:	
-					print("AAAAAHHHH")
-					print(precedents)
-					""" si ça arrive, activer les trois lignes suivantes
-					générer(n_phrases)
-					return
-					"""
 				continue
 			else:
 				probas = proba_tables[prof-1][precedents]
 				gram = choices(list(probas.keys()), weights = list(probas.values()), k = 1)[0]
-				phrases += [gram]
+				squelette += [gram]
 				break
 
-		if gram in stops|{'-'} and phrases[-2] not in stops: 
+		if gram in stops:
 			n += 1
 			if n==n_phrases: break
 
-	# enlever guillemets et parenthèses
-	phrases = [p for p in phrases if p not in {"'",'"','(',')','[',']'}]
-	# enlever les doubles ponctuations consécutives:
-	phrases = [g for i,g in enumerate(phrases[1:]) if not (g in ponctuation-{'-'} and phrases[i-1] in ponctuation)]
+	# A ce stade on a les squelettes de phrases, avec ponctuations mais pas les espaces.
 
-	remplacements = {"pasque":"parce que", "onc": "jamais", "because": "parce que", "bicause": "parce que"}
-	# à partir d'ici, mots contient des tuples (mot, gram)
-	mots = [('.','.')]
-	maj = 1
-	retour = 0
-	for i,gram in enumerate(phrases):
+	remplacements = {"pasque":"parce que", "onc": "jamais", "because": "parce que", "bicause": "parce que", "=TRUE()": 'un'}
 
-		# les autres ponctuations
-		if gram in ponctuation-stops-{"-"}:
-			mots = mots[:-1] if gram not in {';',':'} else mots
-			mot = gram
-		# les ponctu stops
-		elif gram in stops:
-			if gram == '.': mots = mots[:-1]
-			mot = gram + '\n'*(retour or choice([0,0,0,1,0,0,0]))
+	phrases = []
+	maj = 1 # prévision d'une majuscule pour le mot suivant
+	retour = 1 # prévision d'un retour à la ligne après le prochain stop
+	espace = 0 # prévision d'un espace avant l'élément suivant
+
+	# Pour chaque gram, on remplace par un élément approprié : ponctuation, nombre, mot, etc ...
+	for i,gram in enumerate(squelette):
+
+		if gram in ponctuation:
+			e = gram
+			if gram in ':=+!?;-…(}{]"[':
+				e = ' ' + e
+				espace = 1
+			if gram in stops:
+				retour = retour or choice([0,0,0,1,2,1,1,0,0,0,0,0])
+				e = e + '\n'*retour
+				espace = not retour
+				maj = 1
+				retour = 0
+
+		elif gram == 'DIA':
+			e = '\n-'
+			espace = 1
 			maj = 1
-			retour = 0
-		# les tirets "-"
-		elif gram == '-':
-			prec = ''.join((m[0] for m in mots[-2:]))
-			if "\n" not in prec: mot = "\n- "
-			if all(s not in prec for s in stops):
-				if mots[-1][0] == ' ': mots.pop()
-				mot = '.' + mot
-			maj = 1
-			retour = choice([1,1,1,1,0])
-		# les noms propres
-		elif gram =='NPR':
-			mot = choice(['Jean-Philippe','Yvonne'])
-			maj = 0
-		# les nombres
-		elif gram=='NUM':
+			retour = choice([1,1,1,1,1,0])
 
-			# à faire : analyser en différenciant 'NUM' et 'ORD'
-
-			num = choices(['42',choice(range(500))], weights = [tau,1])[0]
-			mot = choices([num2words(num, lang='fr'),num2words(num, lang='fr', to='ordinal')],weights=[pi,1])[0]
-			if maj: mot = mot.capitalize()
+		elif gram == 'NPR':
+			e = ['',' '][espace==1] + choice(['Jean-Philippe','Yvonne'])
+			if e.strip() == 'Yvonne': gram = "_f"
 			maj = 0
-		# les mots
+			espace = 1
+
+		elif gram in {'ADJ:num','ORD'}:
+			num = abs(int(choice([42,gauss(1,8),42,1,2,gauss(1,70),gauss(1,8),1,42,gauss(1,8)])))
+			num = num2words(num, lang='fr') if gram == 'ADJ:num' else num2words(num, lang='fr', to='ordinal')
+			if maj:
+				num = num.capitalize()
+				maj = 0
+			e = ['',' '][espace==1] + num
+			espace = 1
+
+		elif gram in {'ne','ni'}:
+			e = gram
+			if maj:
+				e = mot.capitalize()
+				maj = 0
+			e = ['',' '][espace==1] + e
+			espace = 1
 		else:
-			mot = choices(list(lexicon_inv[gram].keys()),list(lexicon_inv[gram].values()),k=1)[0]
-			# mot = choice(list(lexicon_inv[gram]))
+			# choix d'un mot à partir de gram dans le lexicon inversé
+			if frequence:
+				mot = choices(list(lexicon_inv[gram].keys()),list(lexicon_inv[gram].values()),k=1)[0]
+			else: 
+				mot = choice(list(lexicon_inv[gram]))
 			if mot in remplacements: mot = remplacements[mot]
-			if maj: 
+			if maj:
 				mot = mot.capitalize()
 				maj = 0
+			e = ['',' '][espace==1] + mot
+			espace = 1
 
-		mots += [(mot, gram)]
-		# les espaces
-		if '\n' not in mots[-1][0]:
-			mots += [(" "," ")]
+		phrases += [(e,gram)]
 
+	phrases = phrases[1:]
+
+	# problèmes d'apostrophes devant les voyelles ...
 	problèmes = {"je","j","l","le","la","d","de","t","te","s","se","qu","que","m","me","n","ne",
 	"jusqu","jusque","lorsqu","lorsque","quoiqu","quoique", "parce qu", "parce que",
-	"tandis que","tandis qu", "puisque","puisqu", 'afin de', "afin d"}
-	voyelles = set("aeiouâàéèêëïîôùûh")
+	"tandis que","tandis qu", "puisque","puisqu", 'afin de', "afin d", "est-ce qu", "est-ce que"}
+	voyelles = "aeioâàéèêëïîôùûhu" # le u est à la fin à cause de qu', jusqu', etc. Il est enlevé
+								  # lorsqu'on s'intéresse à la fin du mot précédent
 
-	mots = mots[1:]
-	for i,(mot,gram) in enumerate(mots):
+	for i,(mot,gram) in enumerate(phrases[:-1]):
 
-		if mot.lower() in problèmes:
-			# print("problème")
-			# print(mot,end=' ')
-			if mot[-1] != 'e': 
-				if mot in {'la',"La"}: mot = mot[:-1]
-				mot += "e"
-			mot_suivant = mots[i+2]
-			# print(f'... {mot} ...',end=' ')
-			if mot_suivant[0][0] in voyelles:
-				mot = mot[:-1] + "'"
-				mots[i+1] = ('','')
+		mot_striped_lowered = mot.strip().lower()
+
+		if mot_striped_lowered in problèmes:
+
+			fin_prec = mot[-1]
+			deb_suiv = phrases[i+1][0].strip()[0]
+
+			if fin_prec in voyelles[:-1] and deb_suiv in voyelles:
+				# mot précédent terminé par voyelle, et le suivant débute par une voyelle
+				mot = mot[:-1]+"'"
+				phrases[i+1] = (phrases[i+1][0].lstrip(),phrases[i+1][1])
+
+			elif fin_prec not in voyelles[:-1] and deb_suiv not in voyelles:
+				# mot précédent terminé par consonne, et le suivant débute 
+				# par une consonne ou est une ponctuation
+				gram_suiv = phrases[i+1][1]
+				if "_f" in gram_suiv: # il faudrait restreindre à certains mots de problèmes
+					mot = mot + "a"
+				else:
+					mot = mot + "e"
+
+			elif fin_prec not in voyelles[:-1] and deb_suiv in voyelles:
+				# mot précédent terminé par une consonne et le suivant
+				# débute par une voyelle
+				mot = mot + "'"
+				phrases[i+1] = (phrases[i+1][0].lstrip(),phrases[i+1][1])
+
+			phrases[i] = (mot,gram)
+
+		# cas particuliers de ce/cet/cette/ces
+		if mot_striped_lowered in {"ce", "cet", "cette", "ces"}:
+
+			mot_suivant, gram_suiv = phrases[i+1]
+			# on définit pour le mot suivant :
+			fem = "_f" in gram or "_f" in gram_suiv
+			plur = "_p" in gram_suiv
+			voy = mot_suivant.strip()[0] in voyelles
+			espace = ['',' '][mot[0] == ' ']
+			maj = mot.strip() != mot_striped_lowered
+
+			if plur:
+				mot = 'ces'
+			elif fem:
+				mot = 'cette'
 			else:
-				if mot.lower() == "le" and '_f' in mot_suivant[1] or mot_suivant[0] == "Yvonne": 
-					# print("-A-",end='')
-					mot = mot[:-1]+'a'
-			mots[i] = (mot,gram)
-			# print(f" + {mots[i+2]}"," --> ", f"{mot}{mots[i+1][0]}{mot_suivant[0]}")
+				if voy:
+					mot = 'cet'
+				else:
+					mot = 'ce'
+			mot = espace + [mot,mot.capitalize()][maj]
+			phrases[i] = (mot,gram)
 
-		# sur le même modèle : ce/cet/cette/ces
-		if mot.lower() in {"ce","cet"}:
-			# print("ce/cet/cette/ces")
-			mot_suivant = mots[i+2]
-			# print(mot, mot_suivant, end=' ')
-			char = mot_suivant[0][0]
-			nombre_suivant = "_p" in mot_suivant[1]
-			genre_suivant = "_f" in mot_suivant[1]
-			if nombre_suivant:
-				suff = "s"
-			elif genre_suivant:
-				suff = "tte"
-			elif char in voyelles: 
-				suff = "t"
-			else:
-				suff =''
-			mot = mot[:2]+suff
-			mots[i] = (mot,gram)
-			# print(mot)
-			
+		# cas particuliers de ma/mon (féminin, liaison) ex : on dit mon oie alors que oie = féminin
+		if mot.strip().lower() == "ma": # on restrippe et lowere, 
+			# parce que le ma peut venir du premier if 
+			if phrases[i+1][0].strip()[0] in voyelles:
+				espace = ['',' '][mot[0] == ' ']
+				maj = mot.strip() == 'Ma'
+				mot = espace + ['mon','Mon'][maj]
+				phrases[i] = (mot,gram)
+
+		# cas particulier 'de le' -> 'du'
+		if mot.strip().lower() == 'le': # on s'intéresse à de le lorqu'on est sur le et non sur de
+			if phrases[i-1][0].strip().lower() == 'de':
+				espace = ['',' '][phrases[i-1][0][0] == ' ']
+				maj = phrases[i-1][0].strip() == 'De'
+				mot = espace + ['du', 'Du'][maj]
+				phrases[i] = ('','')
+				phrases[i-1] = (mot,gram)
+
+		# au / à l' (serait à faire)
+
 	print()
-	print(''.join(m for m,g in mots))
+	print(''.join(e for e,g in phrases))
 
-"""
-Yvonne par-derrière endosquelette. Nobiliaire puissamment énergique, la narguait par-dessus embellir desdits myxomatose... Comment, devant concasser, chancela puérilement Jean-Philippe.
 
-Ces frangines racornissent interminablement neutres : ces dynamiques aberrations cavaler. Au portique, extravasation garantit au contemplatif par-dessous schleu galetas. Les théoriquement surprenions de traviole. Tandis qu eux-mêmes tressaillent fors Yvonne.                                                                                                                                                                                                    
--Cessionnaire !                                                                                                                                                                                                                    
--Flatus vocis, abc, los, pékinois, as-rois, plein-temps, mi-porté, saint-crépin, surchoix gourmés, cafardeux revenants, lutz incomplets, vous-mêmes nous-mêmes mourions, enterrions plusieurs concepts épiloguer.    
-
-Car monotonement déraisonnait.                                                                                                                                                                                                     
-- Elle-même tellement ?                                                                                                                                                                                                            
-Elle-même poquait sous-prieur Yvonne par désarticulant des anémiques impalas dès fatras, au manteau, au maelstrom, des rehauts, des blue jeans, dispatchait insolation, le escarpement si fors il ni onze nord-ouest, eux-mêmes trouveraient depuis Yvonne s dégageraient fâcheusement, subtilement.                                                                                                                                                                  
-Diable.                                                                                                                                                                                                                            
-Alléluia.                                                                                                                                                                                                                          
-Flamand.                                                                                                                                                                                                                           
-- Adressage Yvonne, pécore au saloir stroboscopique, le Jean-Philippe versus Jean-Philippe, au sloughi ils gémissaient pieusement puis gloussaient dans cette joie carotteuse péniblement réclamait procès-verbal.                 
-"""
-
-profondeur_max = 6
+profondeur_max = 15
+avec_nltk = 0
 print("Chargement des tables de transitions ...")
-proba_tables, lexicon_inv = chargement(profondeur_max)
+proba_tables, lexicon_inv = chargement(profondeur_max,avec_nltk)
 
 while True:
 	print()
-	profondeur = int(input("Quelle profondeur ? "))
-	n = int(input("combien de phrases ? "))
-	frequence = input("utilisation de la fréquence (0/1) ? ")
+	while True:
+		try: 
+			profondeur = int(input(f"Quelle profondeur ? (1 à {profondeur_max}) "))
+			if 0 < profondeur <= profondeur_max: break
+			else: print(f"Non, entre 1 et {profondeur_max} !!!")
+		except: print("Essaie encore")
+	while True:
+		try: 
+			n = int(input("combien de phrases ? (1 à 500) "))
+			if 0 < n < 500: break
+			else:
+				print('entre 1 et 500 !')
+		except: print("Essaie encore")
+	while True:
+		try: 
+			frequence = int(input("utilisation de la fréquence (0/1) ? "))
+			if frequence in (0,1): break
+			else: print("juste 0 ou 1 s'il te plaît.")
+		except: print("Essaie encore")
+
 	générer(n,profondeur,frequence)
