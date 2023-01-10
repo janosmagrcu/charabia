@@ -305,7 +305,7 @@ while continuer:
             année_voulue = ''
             name_text = input('Entrez le nom du fichier à charabier (IL DOIT SE TROUVER DANS DATA) :')
             try:
-                with codecs.open(local_path + f'/../Data/{name_text}.txt' , "r", "utf-8") as file:
+                with codecs.open(local_path + f'/../Data/{name_text}.txt' , "r", "latin-1") as file:
                     année_voulue = ''.join(unicodedata.normalize('NFC', line) for line in file.readlines())
             except:
                 print('Fichier non trouvé')
