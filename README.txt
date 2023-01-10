@@ -1,23 +1,11 @@
-Bonjour, bienvenue dans le générateur de charabia.
+Bonjour, bienvenue dans le Générateur de Charabia.
 
-Il est composé de deux algorithmes principaux : 
-- l'algorithme générant un texte grammaticalement correct mais dénué de sens
-- l'algorithme remplaçant les mots d'un texte par des pseudo-mots
-Pour utiliser le premier algorithme, il faut ***
-Pour utiliser le second algorithme, il faut simplement lancer le programme intitulé "charabiation de texte".
-Vous pourrez utiliser si vous le souhaitez les textes de l'Ethique de Spinoza ou du Capital de Marx, disponibles dans le dossier "Data", afin de constater ce que ce programme produit.
-Le dossier "Resultats" compile plusieurs textes, ou listes de mots que nous avons générés au cours de l'élaboration du projet. Vous y trouverez également des graphiques résultant de l'analyse des textes qui ont été créés, qui sont décrits plus en détail dans le fichier "Graphiques_README.txt".
+Il est composé de trois dossiers principaux : 
+- "Création de mots" contient les différents programmes permettant de créer des pseudo-mots
+- "Charabiation de textes" contient le programme du même nom qui permet de substituer certains mots d'un texte par des pseudo-mots. Le lancement de ce programme suffit à le faire fonctionner.
+- "Création de textes" contient le programme permettant de générer des textes grammaticalement correct mais dénuée de sens. Il contient aussi les programmes permettant de traiter la base de données Lexicon. Une note dédiée y est présente pour plus de précisions.
+Deux autres dossiers permettent de compléter ce repository :
+Le dossier "Data", qui comporte de nombreux fichiers utiles voire indispensable pour le fonctionnement des programmes, notamment des corpus de mots anglais et français, et de nombreux textes, comme l'Ethique de Spinoza ou Le Capital de Marx (à utiliser par exemple dans le charabieur de texte), ainsi que la base de donnée Lexicon. 
+Et le dossier "Resultats" compile plusieurs textes, ou listes de mots que nous avons générés au cours de l'élaboration du projet.
+Les fichiers dont le nom comporte "ameliores" ont été produit avec le programme "mot_ameliores", et naif avec le programme du même nom, à partir de différentes listes de mots : anglais, français ou autres. La liste des mots anglais comporte parfois des abréviations, ainsi que des mots scientifiques ou très techniques, d'où les résultats parfois assez étonnants. Vous y trouverez également des graphiques résultant de l'analyse des textes qui ont été créés, qui sont décrits plus en détail dans le fichier "Graphiques_README.txt".
 
-
-
-****
-Bonjour, lailophèque dans le cisailaiment de charabia.
-Il est composé de deux agrégrateurs principaux : 
-- l'algorithme générant un d'alibeur grammaticalement papouptif mais zébouché de sens
-- l'algorithme compurant les mots d'un d'alibeur par des malforat-mots
-Pour utiliser le shifflarné isagin, il faut ***
-Pour empliner le récupétant isagin, il faut legra lancer le programme intitulé "charabiation de d'alibeur".
-Vous confiendrez empliner si vous le souhaitez les textes de l'Ethique de Spinoza ou du Commant de Marx, 
-disponibles dans le déchanotonnisti "Data", afin de constater ce que ce programme produit.
-Le déchanotonnisti "Resultats" compile de mardeux-poléandais textes, ou lines de mots que nous avons 
-déplanés au latriéristes de l'élaboration du sercidich.
