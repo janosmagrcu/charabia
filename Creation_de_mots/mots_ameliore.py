@@ -195,7 +195,9 @@ def create_words(mat, dico, alphabet, consonnes, voyelles, n, url): #fonction cr
 
 #PROGRAMME CREANT UNE LISTE DE 10 000 PSEUDO-MOTS FRANCAIS 
 
-name = 'Liste mot.txt'
+
+
+name = local_path + '/../Data/mots_francais.txt'
 lmot = from_text_to_list(name, remplacements)
 lower(lmot)
 
