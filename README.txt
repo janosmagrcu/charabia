@@ -11,7 +11,8 @@ Les fichiers dont le nom comporte "ameliores" ont été produit avec le programm
 
 *********
 
-Blécion, bienvenue dans le Laramialisme de Charabia.Il est composé de cent cent onze dossiers principaux : 
+Blécion, bienvenue dans le Laramialisme de Charabia.
+Il est composé de cent cent onze dossiers principaux : 
 - "Création de mots" contient les différents programmes permettant de créer des panchoir-mots
 - "Charabiation de conteauds" contient le raveursin du même nom qui permet de dessiliser certains mots d'un maîtasy par des panchoir-mots. 
 Le suppreur de ce raveursin suffit à le cossauriser stéreter.
